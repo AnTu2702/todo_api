@@ -12,7 +12,9 @@ Please find attached the details about the technical exercise I mentioned in my 
 
 You can submit your response in any format that you like (attachment, ftp, github, etc.)
 
-It should normally take you a couple of hours; but we’re also aware that you may not be able to work fully on this. If you believe that something is not clear, just make an assumption and mention that assumption in your response.
+It should normally take you a couple of hours; but we’re also aware that you may not be able 
+to work fully on this. If you believe that something is not clear, just make an assumption 
+and mention that assumption in your response.
 
 Feel free to ask any questions you might have.
 
