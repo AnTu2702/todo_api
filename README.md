@@ -44,7 +44,7 @@ ASSUMPTIONS
    - Based on the latter point, at least the error messages of those PUT methods are misleading/wrong: 
      - Description: "Update an existing ToDo object" vs. Error: "There was an error while creating a new ToDo object."
      - Description: "Create a new ToDo object" vs. Error: "There was an error while updating the ToDo object."
-   - The todo object schema in the openapi file must be wrong, where it declares the description to be boolean.
+   - The todo object schema in the openapi file must be wrong at that place, where it declares the description to be boolean.
      - I deactivated the Request-Validation for all of the methods in API-Gateway to let things pass.
    - ...
 
