@@ -29,7 +29,7 @@ ARCHITECTURE
 
 REMARKS
 
-1. I will be using a manual setup, since the given time window for all this is "a couple of hours". Nonetheless I will be preparing a more or less complete structure for things, that will be open and    even create a (bloody) draft for a cloudformation as far as my time allows it.
+1. I will be using a manual setup, since the given time window for all this is "a couple of hours". Nonetheless I will be preparing a more or less complete structure for things, that will be open and    even create a (bloody) draft for a cloudformation as far as my time allows it. Attention: Do not execute it in a stack, it is only wrapped together and far from being executable of even tested for now...
 2. I will not implement any testcases for now, but nonetheless created some structure. For the moment, I just executed tests manually using postman and swagger.io
 3. I configured API Gateway and sourcecode to allow CORS from swagger.io (in order to let you test my implementation with it, directly)
 
