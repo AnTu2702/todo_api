@@ -41,6 +41,7 @@ ASSUMPTIONS
      -> So I made a kind of strict implementation to only let changes/updates happen when both parameters are equal. Could we discuss about that api-method, together?
    - Based on the latter point, at least one of the error messages of that PUT method is misleading: 
      -> Description: "Update an existing ToDo object" vs. Error: "There was an error while creating a new ToDo object."
+     -> Description: "Create a new ToDo object" vs. Error: "There was an error while updating the ToDo object."
    - The todo object schema in the openapi file must be wrong, where it declares the description to be boolean.
      -> I deactivated the Request-Validation for all of the methods in API-Gateway to let things pass.
    - ...
