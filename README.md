@@ -35,7 +35,7 @@ REMARKS
 
 ASSUMPTIONS
 
-1. I assume it was ok to remove some technically relevant hyphons in the openapi schema.
+1. I assume, it was ok to remove some technically relevant hyphons in the openapi schema.
 2. I further assume, that the bunch of little findings in the schema was intended, to let them be found and explained by the candidate?
 
    - GET at /v1/todo/{todo_id} returns an array of objects - why? I assume 'id' shall be unique?
