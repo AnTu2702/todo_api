@@ -54,7 +54,6 @@ def lambda_handler(event, context):
             else:
                 return respond(None, {"message": "ToDo object created successfully."})
     
-    
         elif event['requestContext']['resourcePath'] == "/v1/todo/{todo_id}" and event['httpMethod'] == 'GET':
             
             try:
