@@ -45,7 +45,7 @@ ASSUMPTIONS
      - Description: "Update an existing ToDo object" vs. Error: "There was an error while creating a new ToDo object."
      - Description: "Create a new ToDo object" vs. Error: "There was an error while updating the ToDo object."
    - The todo object schema in the openapi file must be wrong at that place, where it declares the description to be boolean.
-     - I deactivated the Request-Validation for all of the methods in API-Gateway to let things pass.
+     - I deactivated the Request-Validation for all of the methods in API-Gateway in order to let things pass.
    - ...
 
 
