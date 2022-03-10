@@ -69,7 +69,7 @@ def lambda_handler(event, context):
             try:
                 response = table.scan()
             except ClientError as e:
-                return respond(400,{"error": "There was an error loading the ToDo objects."})
+                return respond(400, {"error": "There was an error loading the ToDo objects."})
             else:
                 return respond(None, [response['Items']])
     
