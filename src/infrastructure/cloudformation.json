@@ -478,7 +478,7 @@
             "DependsOn": "LambdaPermission",
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
-                "httpMethod": "GET",
+                "httpMethod": "ANY",
                 "authorizationType": "NONE",
                 "apiKeyRequired": false,
                 "requestParameters": {
