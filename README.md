@@ -27,7 +27,7 @@ ARCHITECTURE
 1. I will be using a classical serverless AWS architecture for that solution consisting of *API-Gateway* (with *Lambda proxy*), *Lambda*, *DynamoDB* and all required *IAM-roles*.
    -> This will be lightweight, easy to maintain, and as scalable as one might imagine or be able to pay ;-)
 
-2. I will let the api gateway setup be imported from the openapi file
+2. I will let the *API gateway* setup be imported from the openapi file
 
 - Template Designer:
 
