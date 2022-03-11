@@ -12,7 +12,7 @@
         "DynamoDBTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
-                "TableName": "Todo",
+                "TableName": "TodoTable",
                 "AttributeDefinitions": [
                     {
                         "AttributeName": "id",
@@ -42,7 +42,7 @@
                 "Version": "$LATEST",
                 "Environment": {
                     "Variables": {
-                        "TODO_DYNAMODB_TABLE": "ToDo-DB"
+                        "TODO_DYNAMODB_TABLE": "ToDoTable"
                     }
                 },
                 "Handler": "lambda_function.lambda_handler",
