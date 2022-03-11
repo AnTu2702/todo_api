@@ -23,13 +23,13 @@ def respond(err, res=None):
     return response
     
 def lambda_handler(event, context):
-    
-    client = boto3.resource('dynamodb')
-    table = client.Table(os.environ.get("TODO_DYNAMODB_TABLE"))
-    
-    print(f"Received event: {json.dumps(event, indent=2)}")
-    
+
     try:
+
+        client = boto3.resource('dynamodb')
+        table = client.Table(os.environ.get("TODO_DYNAMODB_TABLE"))
+        
+        print(f"Received event: {json.dumps(event, indent=2)}")
 
         if event['requestContext']['resourcePath'] == "/v1/todo/{todo_id}" and event['httpMethod'] == 'DELETE':
     
