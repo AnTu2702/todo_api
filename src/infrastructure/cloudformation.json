@@ -14,25 +14,21 @@
         }
     },
     "Resources": {
+      
         "DynamoDBTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
                 "TableName": "Todo",
+              
                 "AttributeDefinitions": [
                     {
-                        "AttributeName": {
-                            "Ref": "HashKeyElementName"
-                        },
-                        "AttributeType": {
-                            "Ref": "HashKeyElementType"
-                        }
+                        "AttributeName": "id",
+                        "AttributeType": "S"
                     }
                 ],
                 "KeySchema": [
                     {
-                        "AttributeName": {
-                            "Ref": "HashKeyElementName"
-                        },
+                        "AttributeName": "id",
                         "KeyType": "HASH"
                     }
                 ],
@@ -42,425 +38,536 @@
                 }
             }
         },
-        
         "ToDoLambda": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
-              "Code": {
-                "ZipFile": "import json\ndef handler(event, context) :\n  print(\"Event: %s\" % json.dumps(event))\n"
-              },
-              "Description": "A ToDo function",
-              "FunctionName": "ToDoLambda",
-              "Handler": "index.handler",
-              "Role": { "Fn::GetAtt": ["LambdaExecutionRole", "Arn"]},
-              "Runtime": "python3.7"
+                "Code": {
+                    "ZipFile": "import json\ndef handler(event, context) :\n  print(\"Event: %s\" % json.dumps(event))\n"
+                },
+                "Description": "A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.",
+                "FunctionName": "ToDoLambda",
+                "Version": "$LATEST",
+                "Environment": {
+                    "Variables": {
+                        "TODO_DYNAMODB_TABLE": "ToDo-DB"
+                    }
+                },
+                "Handler": "lambda_function.lambda_handler",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LambdaExecutionRole",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "python3.7"
             }
-          },
-      
-          "LambdaExecutionRole": {
+        },
+        "LambdaExecutionRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
-              "AssumeRolePolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [{
-                  "Effect": "Allow",
-                  "Principal": { "Service": ["lambda.amazonaws.com"] },
-                  "Action": ["sts:AssumeRole"]
-                }]
-              },
-              "ManagedPolicyArns": ["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+                    "arn:aws:iam::aws:policy/service-role/AWSLambdaMicroserviceExecutionRole"
+                ]
             }
-          },
-      
-          "ToDoApi": {
+        },
+        "ToDoApi": {
             "Type": "AWS::ApiGateway::RestApi",
             "Properties": {
-              "Name": "ToDo API",
-              "Description": "API used for ToDo requests",
-              "FailOnWarnings": true,
-              "Body": {
-                "openapi": "3.0.1",
-                "info": {
-                  "title": "ToDo API",
-                  "description": "The ToDo API manages a ToDo list.",
-                  "version": "1.0.0"
-                },
-                "servers": [
-                  {
-                    "url": "https://gu4vsb44m4.execute-api.eu-central-1.amazonaws.com/default"
-                  }
-                ],
-                "tags": [
-                  {
-                    "name": "ToDo Handler"
-                  }
-                ],
-                "paths": {
-                  "/v1/todo": {
-                    "get": {
-                      "tags": [
-                        "ToDo Handler"
-                      ],
-                      "summary": "Get all ToDo objects",
-                      "description": "ToDo-API-Handler (Get all ToDo objects)",
-                      "responses": {
-                        "200": {
-                          "description": "Successful operation",
-                          "content": {
-                            "application/json": {
-                              "schema": {
-                                "type": "array",
-                                "items": {
-                                  "$ref": "#/components/schemas/ToDo"
+                "Name": "ToDo API",
+                "Description": "API used for ToDo requests",
+                "FailOnWarnings": true,
+                "Body": {
+                    "openapi": "3.0.1",
+                    "info": {
+                        "title": "ToDo API",
+                        "description": "The ToDo API manages a ToDo list.",
+                        "version": "1.0.0"
+                    },
+                    "servers": [
+                        {
+                            "url": "https://gu4vsb44m4.execute-api.eu-central-1.amazonaws.com/default"
+                        }
+                    ],
+                    "tags": [
+                        {
+                            "name": "ToDo Handler"
+                        }
+                    ],
+                    "paths": {
+                        "/v1/todo": {
+                            "get": {
+                                "tags": [
+                                    "ToDo Handler"
+                                ],
+                                "summary": "Get all ToDo objects",
+                                "description": "ToDo-API-Handler (Get all ToDo objects)",
+                                "responses": {
+                                    "200": {
+                                        "description": "Successful operation",
+                                        "content": {
+                                            "application/json": {
+                                                "schema": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/ToDo"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "400": {
+                                        "description": "Operation not successful",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "error": "There was an error loading the ToDo objects."
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                              }
-                            }
-                          }
-                        },
-                        "400": {
-                          "description": "Operation not successful",
-                          "content": {
-                            "application/json": {
-                              "example": {
-                                "error": "There was an error loading the ToDo objects."
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "put": {
-                      "tags": [
-                        "ToDo Handler"
-                      ],
-                      "summary": "Creat a new ToDo object",
-                      "description": "ToDo-API-Handler (Update an existing ToDo object)",
-                      "requestBody": {
-                        "content": {
-                          "application/json": {
-                            "schema": {
-                              "$ref": "#/components/schemas/ToDo"
-                            }
-                          }
-                        },
-                        "required": false
-                      },
-                      "responses": {
-                        "200": {
-                          "description": "Successful operation",
-                          "content": {
-                            "application/json": {
-                              "example": {
-                                "message": "ToDo object updated successfully."
-                              }
-                            }
-                          }
-                        },
-                        "400": {
-                          "description": "Operation not successful",
-                          "content": {
-                            "application/json": {
-                              "example": {
-                                "error": "There was an error while updating the ToDo object."
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  },
-                  "/v1/todo/{todo_id}": {
-                    "get": {
-                      "tags": [
-                        "ToDo Handler"
-                      ],
-                      "summary": "Get a single ToDo object",
-                      "description": "ToDo-API-Handler (Get a single ToDo object)",
-                      "parameters": [
-                        {
-                          "name": "todo_id",
-                          "in": "path",
-                          "required": true,
-                          "schema": {
-                            "type": "string"
-                          }
-                        }
-                      ],
-                      "responses": {
-                        "200": {
-                          "description": "Successful operation",
-                          "content": {
-                            "application/json": {
-                              "schema": {
-                                "type": "array",
-                                "items": {
-                                  "$ref": "#/components/schemas/ToDo"
+                            },
+                            "put": {
+                                "tags": [
+                                    "ToDo Handler"
+                                ],
+                                "summary": "Creat a new ToDo object",
+                                "description": "ToDo-API-Handler (Update an existing ToDo object)",
+                                "requestBody": {
+                                    "content": {
+                                        "application/json": {
+                                            "schema": {
+                                                "$ref": "#/components/schemas/ToDo"
+                                            }
+                                        }
+                                    },
+                                    "required": false
+                                },
+                                "responses": {
+                                    "200": {
+                                        "description": "Successful operation",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "message": "ToDo object updated successfully."
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "400": {
+                                        "description": "Operation not successful",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "error": "There was an error while updating the ToDo object."
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                              }
                             }
-                          }
                         },
-                        "400": {
-                          "description": "Operation not successful",
-                          "content": {
-                            "application/json": {
-                              "example": {
-                                "error": "There was an error loading the ToDo objects."
-                              }
+                        "/v1/todo/{todo_id}": {
+                            "get": {
+                                "tags": [
+                                    "ToDo Handler"
+                                ],
+                                "summary": "Get a single ToDo object",
+                                "description": "ToDo-API-Handler (Get a single ToDo object)",
+                                "parameters": [
+                                    {
+                                        "name": "todo_id",
+                                        "in": "path",
+                                        "required": true,
+                                        "schema": {
+                                            "type": "string"
+                                        }
+                                    }
+                                ],
+                                "responses": {
+                                    "200": {
+                                        "description": "Successful operation",
+                                        "content": {
+                                            "application/json": {
+                                                "schema": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/ToDo"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "400": {
+                                        "description": "Operation not successful",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "error": "There was an error loading the ToDo objects."
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "put": {
+                                "tags": [
+                                    "ToDo Handler"
+                                ],
+                                "summary": "Update an existing ToDo object",
+                                "description": "ToDo-API-Handler (Update an existing ToDo object)",
+                                "parameters": [
+                                    {
+                                        "name": "todo_id",
+                                        "in": "path",
+                                        "required": true,
+                                        "schema": {
+                                            "type": "string"
+                                        }
+                                    }
+                                ],
+                                "requestBody": {
+                                    "content": {
+                                        "application/json": {
+                                            "schema": {
+                                                "$ref": "#/components/schemas/ToDo"
+                                            }
+                                        }
+                                    },
+                                    "required": false
+                                },
+                                "responses": {
+                                    "200": {
+                                        "description": "Successful operation",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "message": "ToDo object created successfully."
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "400": {
+                                        "description": "Operation not successful",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "error": "There was an error while creating a new ToDo object."
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "delete": {
+                                "tags": [
+                                    "ToDo Handler"
+                                ],
+                                "summary": "Delete an existing ToDo object",
+                                "description": "ToDo-API-Handler (Delete an existing ToDo object)",
+                                "parameters": [
+                                    {
+                                        "name": "todo_id",
+                                        "in": "path",
+                                        "required": true,
+                                        "schema": {
+                                            "type": "string"
+                                        }
+                                    }
+                                ],
+                                "responses": {
+                                    "200": {
+                                        "description": "Successful operation",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "message": "ToDo object deleted successfully."
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "400": {
+                                        "description": "Operation not successful",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "error": "There has been an error while deleting the ToDo object."
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                          }
                         }
-                      }
                     },
-                    "put": {
-                      "tags": [
-                        "ToDo Handler"
-                      ],
-                      "summary": "Update an existing ToDo object",
-                      "description": "ToDo-API-Handler (Update an existing ToDo object)",
-                      "parameters": [
-                        {
-                          "name": "todo_id",
-                          "in": "path",
-                          "required": true,
-                          "schema": {
-                            "type": "string"
-                          }
+                    "components": {
+                        "schemas": {
+                            "ToDo": {
+                                "required": [
+                                    "id",
+                                    "title",
+                                    "description"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "example": {
+                                    "id": "bb73670b-d5e6-42af-9e5a-ce4797841d3d",
+                                    "title": "API",
+                                    "description": "Create an API that meets the requirements"
+                                }
+                            }
                         }
-                      ],
-                      "requestBody": {
-                        "content": {
-                          "application/json": {
-                            "schema": {
-                              "$ref": "#/components/schemas/ToDo"
-                            }
-                          }
-                        },
-                        "required": false
-                      },
-                      "responses": {
-                        "200": {
-                          "description": "Successful operation",
-                          "content": {
-                            "application/json": {
-                              "example": {
-                                "message": "ToDo object created successfully."
-                              }
-                            }
-                          }
-                        },
-                        "400": {
-                          "description": "Operation not successful",
-                          "content": {
-                            "application/json": {
-                              "example": {
-                                "error": "There was an error while creating a new ToDo object."
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "delete": {
-                      "tags": [
-                        "ToDo Handler"
-                      ],
-                      "summary": "Delete an existing ToDo object",
-                      "description": "ToDo-API-Handler (Delete an existing ToDo object)",
-                      "parameters": [
-                        {
-                          "name": "todo_id",
-                          "in": "path",
-                          "required": true,
-                          "schema": {
-                            "type": "string"
-                          }
-                        }
-                      ],
-                      "responses": {
-                        "200": {
-                          "description": "Successful operation",
-                          "content": {
-                            "application/json": {
-                              "example": {
-                                "message": "ToDo object deleted successfully."
-                              }
-                            }
-                          }
-                        },
-                        "400": {
-                          "description": "Operation not successful",
-                          "content": {
-                            "application/json": {
-                              "example": {
-                                "error": "There has been an error while deleting the ToDo object."
-                              }
-                            }
-                          }
-                        }
-                      }
                     }
-                  }
-                },
-                "components": {
-                  "schemas": {
-                    "ToDo": {
-                      "required": [
-                        "id",
-                        "title",
-                        "description"
-                      ],
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string"
-                        },
-                        "title": {
-                          "type": "string"
-                        },
-                        "description": {
-                          "type": "boolean"
-                        }
-                      },
-                      "example": {
-                        "id": "bb73670b-d5e6-42af-9e5a-ce4797841d3d",
-                        "title": "API",
-                        "description": "Create an API that meets the requirements"
-                      }
-                    }
-                  }
                 }
-              }
             }
-          },
-      
-          "LambdaPermission": {
+        },
+        "LambdaPermission": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
-              "Action": "lambda:invokeFunction",
-              "FunctionName": {"Fn::GetAtt": ["ToDoLambda", "Arn"]},
-              "Principal": "apigateway.amazonaws.com",
-              "SourceArn": {"Fn::Join": ["", ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "ToDoApi"}, "/*"]]}
+                "Action": "lambda:invokeFunction",
+                "FunctionName": {
+                    "Fn::GetAtt": [
+                        "ToDoLambda",
+                        "Arn"
+                    ]
+                },
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "arn:aws:execute-api:",
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                                "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                                "Ref": "ToDoApi"
+                            },
+                            "/*"
+                        ]
+                    ]
+                }
             }
-          },
-      
-          "ApiGatewayCloudWatchLogsRole": {
+        },
+        "ApiGatewayCloudWatchLogsRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
-              "AssumeRolePolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [{
-                  "Effect": "Allow",
-                  "Principal": { "Service": ["apigateway.amazonaws.com"] },
-                  "Action": ["sts:AssumeRole"]
-                }]
-              },
-              "Policies": [{
-                "PolicyName": "ApiGatewayLogsPolicy",
-                "PolicyDocument": {
-                  "Version": "2012-10-17",
-                  "Statement": [{
-                    "Effect": "Allow",
-                    "Action": [
-                      "logs:CreateLogGroup",
-                      "logs:CreateLogStream",
-                      "logs:DescribeLogGroups",
-                      "logs:DescribeLogStreams",
-                      "logs:PutLogEvents",
-                      "logs:GetLogEvents",
-                      "logs:FilterLogEvents"
-                    ],
-                    "Resource": "*"
-                  }]
-                }
-              }]
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "apigateway.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "ApiGatewayLogsPolicy",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:DescribeLogGroups",
+                                        "logs:DescribeLogStreams",
+                                        "logs:PutLogEvents",
+                                        "logs:GetLogEvents",
+                                        "logs:FilterLogEvents"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
             }
-          },
-      
-          "ApiGatewayAccount": {
+        },
+        "ApiGatewayAccount": {
             "Type": "AWS::ApiGateway::Account",
             "Properties": {
-              "CloudWatchRoleArn": {"Fn::GetAtt": ["ApiGatewayCloudWatchLogsRole", "Arn"] }
+                "CloudWatchRoleArn": {
+                    "Fn::GetAtt": [
+                        "ApiGatewayCloudWatchLogsRole",
+                        "Arn"
+                    ]
+                }
             }
-          },
-      
-          "ToDoApiStage": {
-            "DependsOn": ["ApiGatewayAccount"],
+        },
+        "ToDoApiStage": {
+            "DependsOn": [
+                "ApiGatewayAccount"
+            ],
             "Type": "AWS::ApiGateway::Stage",
             "Properties": {
-              "DeploymentId": {"Ref": "ApiDeployment"},
-              "MethodSettings": [{
-                "DataTraceEnabled": true,
-                "HttpMethod": "*",
-                "LoggingLevel": "INFO",
-                "ResourcePath": "/*"
-              }],
-              "RestApiId": {"Ref": "ToDoApi"},
-              "StageName": "LATEST"
+                "DeploymentId": {
+                    "Ref": "ApiDeployment"
+                },
+                "MethodSettings": [
+                    {
+                        "DataTraceEnabled": true,
+                        "HttpMethod": "*",
+                        "LoggingLevel": "INFO",
+                        "ResourcePath": "/*"
+                    }
+                ],
+                "RestApiId": {
+                    "Ref": "ToDoApi"
+                },
+                "StageName": "LATEST"
             }
-          },
-      
-          "ApiDeployment": {
+        },
+        "ApiDeployment": {
             "Type": "AWS::ApiGateway::Deployment",
-            "DependsOn": ["ToDoRequest"],
+            "DependsOn": [
+                "ToDoRequest"
+            ],
             "Properties": {
-              "RestApiId": {"Ref": "ToDoApi"},
-              "StageName": "DummyStage"
+                "RestApiId": {
+                    "Ref": "ToDoApi"
+                },
+                "StageName": "DummyStage"
             }
-          },
-      
-          "ToDoResource": {
+        },
+        "ToDoResource": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
-              "RestApiId": {"Ref": "ToDoApi"},
-              "ParentId": {"Fn::GetAtt": ["ToDoApi", "RootResourceId"]},
-              "PathPart": "ToDo"
+                "RestApiId": {
+                    "Ref": "ToDoApi"
+                },
+                "ParentId": {
+                    "Fn::GetAtt": [
+                        "ToDoApi",
+                        "RootResourceId"
+                    ]
+                },
+                "PathPart": "ToDo"
             }
-          },
-      
-          "ToDoRequest": {
+        },
+        "ToDoRequest": {
             "DependsOn": "LambdaPermission",
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
-              "AuthorizationType": "NONE",
-              "HttpMethod": "GET",
-              "Integration": {
-                "Type": "AWS",
-                "IntegrationHttpMethod": "POST",
-                "Uri": {"Fn::Join": ["",
-                  ["arn:aws:apigateway:", {"Ref": "AWS::Region"}, ":lambda:path/2015-03-31/functions/", {"Fn::GetAtt": ["ToDoLambda", "Arn"]}, "/invocations"]
-                ]},
-                "IntegrationResponses": [{
-                  "StatusCode": 200
-                }],
-                "RequestTemplates": {
-                  "application/json": {"Fn::Join": ["", [
-                    "{",
-                    "  \"name\": \"$input.params('name')\"",
-                    "}"
-                  ]]}
-                }
-              },
-              "RequestParameters": {
-                "method.request.querystring.name": false
-              },
-              "ResourceId": {"Ref": "ToDoResource"},
-              "RestApiId": {"Ref": "ToDoApi"},
-              "MethodResponses": [{
-                "StatusCode": 200
-              }]
+                "AuthorizationType": "NONE",
+                "HttpMethod": "GET",
+                "Integration": {
+                    "Type": "AWS",
+                    "IntegrationHttpMethod": "POST",
+                    "Uri": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "arn:aws:apigateway:",
+                                {
+                                    "Ref": "AWS::Region"
+                                },
+                                ":lambda:path/2015-03-31/functions/",
+                                {
+                                    "Fn::GetAtt": [
+                                        "ToDoLambda",
+                                        "Arn"
+                                    ]
+                                },
+                                "/invocations"
+                            ]
+                        ]
+                    },
+                    "IntegrationResponses": [
+                        {
+                            "StatusCode": 200
+                        }
+                    ],
+                    "RequestTemplates": {
+                        "application/json": {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "{",
+                                    "  \"name\": \"$input.params('name')\"",
+                                    "}"
+                                ]
+                            ]
+                        }
+                    }
+                },
+                "RequestParameters": {
+                    "method.request.querystring.name": false
+                },
+                "ResourceId": {
+                    "Ref": "ToDoResource"
+                },
+                "RestApiId": {
+                    "Ref": "ToDoApi"
+                },
+                "MethodResponses": [
+                    {
+                        "StatusCode": 200
+                    }
+                ]
             }
-          }
-        },
-      
-        "Outputs": {
-          "RootUrl": {
-            "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "ToDoApi"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com"]]}
-          }
         }
-      }
-
-
+    },
+    "Outputs": {
+        "RootUrl": {
+            "Description": "Root URL of the API gateway",
+            "Value": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "https://",
+                        {
+                            "Ref": "ToDoApi"
+                        },
+                        ".execute-api.",
+                        {
+                            "Ref": "AWS::Region"
+                        },
+                        ".amazonaws.com"
+                    ]
+                ]
+            }
+        }
     }
 }
