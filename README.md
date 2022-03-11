@@ -29,7 +29,9 @@ ARCHITECTURE
 
 2. I will let the api gateway setup be imported from the openapi file
 
+- Template Designer:
 
+  <img src="doc/screenshots/template-designer.png" />
 
 REMARKS
 
