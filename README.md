@@ -42,11 +42,11 @@ REMARKS
 ASSUMPTIONS
 
 1. I assume, it was ok to remove some technically relevant hyphons in the openapi schema.
-2. I assume, that you expect an implementation from my side, which will strictly align with the given openapi file. 
-   So I further decided to NOT MAKE ANY FURTHER CHANGES to it, but implement exactly as specified.
-3. In real life, I would act differently and try to discuss the specification in order to get it improved!
-   Only for this exercise, I will do it that way now, so that we have a clear basis for any discussion on what I did and why...
 2. I further assume, that the bunch of little findings in the schema was intended, to let them be found and explained by the candidate?
+3. I assume, that you expect an implementation from my side, which will strictly align with the given openapi file. 
+   So I further decided to NOT MAKE ANY FURTHER CHANGES to it, but implement exactly as specified.
+4. In real life, I would act differently and try to discuss the specification in order to get it improved!
+   Only for this exercise, I will do it that way now, so that we have a clear basis for any discussion on what I did and why...
 
    - *GET* at */v1/todo/{todo_id}* returns an array of objects - why? I assume *'id'* shall be unique?
    - There are two different *PUT* methods in the api, although one of them is rather used like a *POST* (derived from description) and 'id' will be in pathparameter AND requestbody.
