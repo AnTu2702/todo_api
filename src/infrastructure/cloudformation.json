@@ -83,7 +83,7 @@
         "ToDoApi": {
             "Type": "AWS::ApiGateway::RestApi",
             "Properties": {
-                "Name": "ToDo API",
+                "Name": "ToDoApi",
                 "Description": "API used for ToDo requests",
                 "FailOnWarnings": true,
                 "Body": {
@@ -93,11 +93,6 @@
                         "description": "The ToDo API manages a ToDo list.",
                         "version": "1.0.0"
                     },
-                    "servers": [
-                        {
-                            "url": "https://gu4vsb44m4.execute-api.eu-central-1.amazonaws.com/default"
-                        }
-                    ],
                     "tags": [
                         {
                             "name": "ToDo Handler"
