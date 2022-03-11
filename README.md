@@ -55,6 +55,7 @@ ASSUMPTIONS
    - The todo object schema in the openapi file must be wrong at that place, where it declares the description to be boolean.
      - I deactivated the Request-Validation for all of the methods in API-Gateway in order to let things pass.
    - The body of the PUT method is configured as "required == false". For the PUT the body should be "required == true"
+   - ...
 
 
 SUMMARY
@@ -80,4 +81,3 @@ Find here some screenshots from the management console...
 - Cloudwatch Logs:
 
   <img src="doc/screenshots/cloudwatch-loggroup.jpg" />
-  
