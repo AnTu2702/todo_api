@@ -456,7 +456,7 @@
                 "RestApiId": {
                     "Ref": "ToDoApi"
                 },
-                "StageName": "DummyStage"
+                "StageName": "TestStage"
             }
         },
         "ToDoResource": {
