@@ -31,7 +31,7 @@ def lambda_handler(event, context):
     
     try:
 
-        if event['requestContext']['resourcePath'] == '/v1/todo/{todo_id}' and event['httpMethod'] == 'DELETE':
+        if event['requestContext']['resourcePath'] == "/v1/todo/{todo_id}" and event['httpMethod'] == 'DELETE':
     
             try:
                 response = table.delete_item(Key={'id': event['pathParameters']['todo_id']}, ConditionExpression='attribute_exists(id)')
@@ -40,7 +40,7 @@ def lambda_handler(event, context):
             else:
                 return respond(None, {"message": "ToDo object deleted successfully."})
             
-        elif event['requestContext']['resourcePath'] == '/v1/todo/{todo_id}' and event['httpMethod'] == 'PUT':
+        elif event['requestContext']['resourcePath'] == "/v1/todo/{todo_id}" and event['httpMethod'] == 'PUT':
             
             body = json.loads(event['body'])
             
