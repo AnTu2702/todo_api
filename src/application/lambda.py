@@ -33,7 +33,8 @@ def lambda_handler(event, context):
         if event['requestContext']['resourcePath'] == "/v1/todo/{todo_id}" and event['httpMethod'] == 'DELETE':
     
             try:
-                response = table.delete_item(Key={'id': event['pathParameters']['todo_id']}, ConditionExpression='attribute_exists(id)')
+                response = table.delete_item(Key={'id': event['pathParameters']['todo_id']},
+                                             ConditionExpression='attribute_exists(id)')
             except ClientError as e:
                 return respond(400, {"error": "There has been an error while deleting the ToDo object."})
             else:
@@ -45,7 +46,8 @@ def lambda_handler(event, context):
             
             try:
                 if event['pathParameters']['todo_id'] == body['id']:
-                    response = table.put_item(Item={'id': body['id'], 'title': body['title'], 'description': body['description']}, ConditionExpression='attribute_exists(id)')
+                    response = table.put_item(Item={'id': body['id'], 'title': body['title'], 'description': body['description']},
+                                              ConditionExpression='attribute_exists(id)')
                 else:
                     raise ClientError({},"")
             except ClientError as e:
@@ -60,7 +62,8 @@ def lambda_handler(event, context):
             except ClientError as e:
                 return respond(400, {"error": "There was an error loading the ToDo objects."})
             else:
-                return respond(None, [response['Item']]) if 'Item' in response else respond(400, {"error": "There was an error loading the ToDo objects."})
+                return respond(None, [response['Item']]) if 'Item' in response \
+                  else respond(400, {"error": "There was an error loading the ToDo objects."})
        
         elif event['requestContext']['resourcePath'] == "/v1/todo" and event['httpMethod'] == 'GET':
             
@@ -76,7 +79,8 @@ def lambda_handler(event, context):
             body = json.loads(event['body'])
             
             try:
-                response = table.put_item(Item={'id': body['id'], 'title': body['title'], 'description': body['description']}, ConditionExpression='attribute_not_exists(id)') 
+                response = table.put_item(Item={'id': body['id'], 'title': body['title'], 'description': body['description']},
+                                          ConditionExpression='attribute_not_exists(id)') 
             except ClientError as e:
                 return respond(400, {"error": "There was an error while updating the ToDo object."})
             else:
