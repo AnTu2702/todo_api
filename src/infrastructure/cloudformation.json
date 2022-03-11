@@ -39,7 +39,6 @@
                 },
                 "Description": "A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.",
                 "FunctionName": "ToDoLambda",
-                "Version": "$LATEST",
                 "Environment": {
                     "Variables": {
                         "TODO_DYNAMODB_TABLE": "ToDoTable"
@@ -450,7 +449,6 @@
         "ApiDeployment": {
             "Type": "AWS::ApiGateway::Deployment",
             "DependsOn": [
-                "ToDoRequest"
             ],
             "Properties": {
                 "RestApiId": {
@@ -472,53 +470,6 @@
                     ]
                 },
                 "PathPart": "ToDo"
-            }
-        },
-        "ToDoRequest": {
-            "DependsOn": "LambdaPermission",
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-                "httpMethod": "ANY",
-                "authorizationType": "NONE",
-                "apiKeyRequired": false,
-                "requestParameters": {
-                    "method.request.path.todo_id": true
-                },
-                "methodResponses": {
-                    "200": {
-                        "statusCode": "200",
-                        "responseParameters": {
-                            "method.response.header.Access-Control-Allow-Origin": false
-                        },
-                        "responseModels": {
-                            "application/json": "ToDo"
-                        }
-                    },
-                    "400": {
-                        "statusCode": "400"
-                    }
-                },
-                "methodIntegration": {
-                    "type": "AWS_PROXY",
-                    "httpMethod": "POST",
-                    "uri": {
-                        "Ref": "ToDoLambda"
-                    },
-                    "passthroughBehavior": "WHEN_NO_MATCH",
-                    "contentHandling": "CONVERT_TO_TEXT",
-                    "timeoutInMillis": 29000,
-                    "integrationResponses": {
-                        "200": {
-                            "statusCode": "200",
-                            "responseParameters": {
-                                "method.response.header.Access-Control-Allow-Origin": "'*'"
-                            },
-                            "responseTemplates": {
-                                "application/json": null
-                            }
-                        }
-                    }
-                }
             }
         }
     },
