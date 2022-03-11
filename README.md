@@ -26,9 +26,10 @@ ARCHITECTURE
 
 1. I will be using a classical serverless AWS architecture for that solution consisting of API-Gateway (with lambda proxy), Lambda, DynamoDB and all required IAM-roles.
    -> This will be lightweight, easy to maintain, and as scalable as one might imagine or be able to pay ;-)
+
 2. I will let the api gateway setup be imported from the openapi file
 
-<img src="doc/screenshots/api-gateway.jpg" />
+
 
 REMARKS
 
@@ -39,6 +40,10 @@ REMARKS
 ASSUMPTIONS
 
 1. I assume, it was ok to remove some technically relevant hyphons in the openapi schema.
+2. I assume, that you request an implementation from my side, which will strictly align with the given openapi file. 
+   So will decided to NOT MAKE ANY FURTHER CHANGES to it, but implement exactly as specified.
+3. In real life, I would act differently and try to discuss the specification in order to get it improved!
+   Only for this exercise, I will do it that way now, so that we have a clear basis for any discussion on what I did and why...
 2. I further assume, that the bunch of little findings in the schema was intended, to let them be found and explained by the candidate?
 
    - GET at /v1/todo/{todo_id} returns an array of objects - why? I assume 'id' shall be unique?
@@ -49,12 +54,30 @@ ASSUMPTIONS
      - Description: "Create a new ToDo object" vs. Error: "There was an error while updating the ToDo object."
    - The todo object schema in the openapi file must be wrong at that place, where it declares the description to be boolean.
      - I deactivated the Request-Validation for all of the methods in API-Gateway in order to let things pass.
-   - ...
+   - The body of the PUT method is configured as "required == false". For the PUT the body should be "required == true"
 
 
+SUMMARY
 
+Find here some screenshots from the management console...
 
+- API-Gateway:
 
+  <img src="doc/screenshots/api-gateway.jpg" />
 
+- DynamoDB:
 
+  <img src="doc/screenshots/dynamodb-table.jpg" />
 
+- Lambda:
+
+  <img src="doc/screenshots/lambda-config.jpg" />
+
+- Swagger UI:
+
+  <img src="doc/screenshots/swagger-editor.jpg" />
+  
+- Cloudwatch Logs:
+
+  <img src="doc/screenshots/cloudwatch-loggroup.jpg" />
+  
