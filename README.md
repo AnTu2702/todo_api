@@ -24,7 +24,7 @@ Josefina
 
 ARCHITECTURE
 
-1. I will be using a classical serverless AWS architecture for that solution consisting of API-Gateway (with lambda proxy), Lambda, DynamoDB and all required IAM-roles.
+1. I will be using a classical serverless AWS architecture for that solution consisting of *API-Gateway* (with *Lambda proxy*), *Lambda*, *DynamoDB* and all required *IAM-roles*.
    -> This will be lightweight, easy to maintain, and as scalable as one might imagine or be able to pay ;-)
 
 2. I will let the api gateway setup be imported from the openapi file
@@ -48,15 +48,15 @@ ASSUMPTIONS
    Only for this exercise, I will do it that way now, so that we have a clear basis for any discussion on what I did and why...
 2. I further assume, that the bunch of little findings in the schema was intended, to let them be found and explained by the candidate?
 
-   - GET at /v1/todo/{todo_id} returns an array of objects - why? I assume 'id' shall be unique?
-   - There are two different PUT methods in the api, although one of them is rather used like a POST (derived from description) and 'id' will be in pathparameter AND requestbody.
+   - *GET* at */v1/todo/{todo_id}* returns an array of objects - why? I assume *'id'* shall be unique?
+   - There are two different *PUT* methods in the api, although one of them is rather used like a *POST* (derived from description) and 'id' will be in pathparameter AND requestbody.
      - So I made a kind of strict implementation to only let changes/updates happen when both parameters are equal. Could we discuss about that api-method, together?
    - Based on the latter point, at least the error messages of those PUT methods are misleading/wrong: 
-     - Description: "Update an existing ToDo object" vs. Error: "There was an error while creating a new ToDo object."
-     - Description: "Create a new ToDo object" vs. Error: "There was an error while updating the ToDo object."
+     - Description: *"Update an existing ToDo object"* vs. Error: *"There was an error while creating a new ToDo object."*
+     - Description: *"Create a new ToDo object"* vs. Error: *"There was an error while updating the ToDo object."*
    - The todo object schema in the openapi file must be wrong at that place, where it declares the description to be boolean.
      - I deactivated the Request-Validation for all of the methods in API-Gateway in order to let things pass.
-   - The body of the PUT method is configured as "required == false". For the PUT the body should be "required == true"
+   - The body of the PUT method is configured as *"required == false"*. For the PUT the body should be *"required == true"*
    - ...
 
 
