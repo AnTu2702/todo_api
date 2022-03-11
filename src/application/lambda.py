@@ -25,7 +25,6 @@ def respond(err, res=None):
 def lambda_handler(event, context):
 
     try:
-
         client = boto3.resource('dynamodb')
         table = client.Table(os.environ.get("TODO_DYNAMODB_TABLE"))
         
