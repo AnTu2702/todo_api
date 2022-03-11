@@ -2,24 +2,17 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "AWS CloudFormation Template for ToDo-Serverless Stack",
     "Parameters": {
-        "HashKeyElementName": {
+        "Any": {
             "Type": "String",
-            "Default": "id",
-            "Description": "Hash Key Name"
-        },
-        "HashKeyElementType": {
-            "Type": "String",
-            "Default": "S",
-            "Description": "Hash Key Type"
+            "Default": "any",
+            "Description": "any parameter"
         }
     },
     "Resources": {
-      
         "DynamoDBTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
                 "TableName": "Todo",
-              
                 "AttributeDefinitions": [
                     {
                         "AttributeName": "id",
