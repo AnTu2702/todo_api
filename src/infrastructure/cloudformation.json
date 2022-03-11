@@ -478,62 +478,47 @@
             "DependsOn": "LambdaPermission",
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
-                "AuthorizationType": "NONE",
-                "HttpMethod": "GET",
-                "Integration": {
-                    "Type": "AWS",
-                    "IntegrationHttpMethod": "POST",
-                    "Uri": {
-                        "Fn::Join": [
-                            "",
-                            [
-                                "arn:aws:apigateway:",
-                                {
-                                    "Ref": "AWS::Region"
-                                },
-                                ":lambda:path/2015-03-31/functions/",
-                                {
-                                    "Fn::GetAtt": [
-                                        "ToDoLambda",
-                                        "Arn"
-                                    ]
-                                },
-                                "/invocations"
-                            ]
-                        ]
+                "httpMethod": "GET",
+                "authorizationType": "NONE",
+                "apiKeyRequired": false,
+                "requestParameters": {
+                    "method.request.path.todo_id": true
+                },
+                "methodResponses": {
+                    "200": {
+                        "statusCode": "200",
+                        "responseParameters": {
+                            "method.response.header.Access-Control-Allow-Origin": false
+                        },
+                        "responseModels": {
+                            "application/json": "ToDo"
+                        }
                     },
-                    "IntegrationResponses": [
-                        {
-                            "StatusCode": 200
-                        }
-                    ],
-                    "RequestTemplates": {
-                        "application/json": {
-                            "Fn::Join": [
-                                "",
-                                [
-                                    "{",
-                                    "  \"name\": \"$input.params('name')\"",
-                                    "}"
-                                ]
-                            ]
-                        }
+                    "400": {
+                        "statusCode": "400"
                     }
                 },
-                "RequestParameters": {
-                    "method.request.querystring.name": false
-                },
-                "ResourceId": {
-                    "Ref": "ToDoResource"
-                },
-                "RestApiId": {
-                    "Ref": "ToDoApi"
-                },
-                "MethodResponses": [
-                    {
-                        "StatusCode": 200
+                "methodIntegration": {
+                    "type": "AWS_PROXY",
+                    "httpMethod": "POST",
+                    "uri": {
+                        "Ref": "ToDoLambda"
+                    },
+                    "passthroughBehavior": "WHEN_NO_MATCH",
+                    "contentHandling": "CONVERT_TO_TEXT",
+                    "timeoutInMillis": 29000,
+                    "integrationResponses": {
+                        "200": {
+                            "statusCode": "200",
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Origin": "'*'"
+                            },
+                            "responseTemplates": {
+                                "application/json": null
+                            }
+                        }
                     }
-                ]
+                }
             }
         }
     },
