@@ -41,7 +41,7 @@ ASSUMPTIONS
 
 1. I assume, it was ok to remove some technically relevant hyphons in the openapi schema.
 2. I assume, that you request an implementation from my side, which will strictly align with the given openapi file. 
-   So will decided to NOT MAKE ANY FURTHER CHANGES to it, but implement exactly as specified.
+   So I further decided to NOT MAKE ANY FURTHER CHANGES to it, but implement exactly as specified.
 3. In real life, I would act differently and try to discuss the specification in order to get it improved!
    Only for this exercise, I will do it that way now, so that we have a clear basis for any discussion on what I did and why...
 2. I further assume, that the bunch of little findings in the schema was intended, to let them be found and explained by the candidate?
