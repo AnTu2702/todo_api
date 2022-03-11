@@ -10,14 +10,14 @@ from botocore.exceptions import ClientError
 def respond(err, res=None):
 
     response =  {
-            "statusCode": 200 if err is None else err ,
-            "body": json.dumps(res),
-            "headers": { "Content Type": "application/json",
-                         "Access-Control-Allow-Headers" : "Content-Type",
-                         "Access-Control-Allow-Origin": "https://editor.swagger.io",
-                         "Access-Control-Allow-Methods": "OPTIONS,GET,PUT,DELETE" },
-            "isBase64Encoded": False
-        }
+        "statusCode": 200 if err is None else err ,
+        "body": json.dumps(res),
+        "headers": { "Content Type": "application/json",
+                     "Access-Control-Allow-Headers" : "Content-Type",
+                     "Access-Control-Allow-Origin": "https://editor.swagger.io",
+                     "Access-Control-Allow-Methods": "OPTIONS,GET,PUT,DELETE" },
+        "isBase64Encoded": False
+    }
     
     print(f"Response on event: {response}")
     return response
