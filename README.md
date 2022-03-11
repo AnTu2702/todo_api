@@ -42,7 +42,7 @@ REMARKS
 ASSUMPTIONS
 
 1. I assume, it was ok to remove some technically relevant hyphons in the openapi schema.
-2. I assume, that you request an implementation from my side, which will strictly align with the given openapi file. 
+2. I assume, that you expect an implementation from my side, which will strictly align with the given openapi file. 
    So I further decided to NOT MAKE ANY FURTHER CHANGES to it, but implement exactly as specified.
 3. In real life, I would act differently and try to discuss the specification in order to get it improved!
    Only for this exercise, I will do it that way now, so that we have a clear basis for any discussion on what I did and why...
@@ -56,7 +56,7 @@ ASSUMPTIONS
      - Description: *"Create a new ToDo object"* vs. Error: *"There was an error while updating the ToDo object."*
    - The todo object schema in the openapi file must be wrong at that place, where it declares the description to be boolean.
      - I deactivated the Request-Validation for all of the methods in API-Gateway in order to let things pass.
-   - The body of the PUT method is configured as *"required == false"*. For the PUT the body should be *"required == true"*
+   - The body of the PUT method is configured as *"required == false"*. For the PUT, the body should be *"required == true"*
    - ...
 
 
