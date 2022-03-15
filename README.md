@@ -45,7 +45,7 @@ ASSUMPTIONS
 2. I further assume, that the bunch of little findings in the schema was intended, to let them be found and explained by the candidate?
    - *GET* at */v1/todo/{todo_id}* returns an array of objects - why? I assume *'id'* shall be unique?
    - There are two different *PUT* methods in the api, although one of them is rather used like a *POST* (derived from description) and 'id' will be in pathparameter AND requestbody.
-     - So I made a kind of strict implementation to only let changes/updates happen when both parameters are equal. Could we discuss about that api-method, together?
+     - So I made a kind of strict implementation to only let changes/updates happen when both parameters are equal. (Another option would have been, to let the client decide to change an objects unique id as well...) Could we discuss about that api-method, together?
    - Based on the latter point, at least the error messages of those *PUT* methods are misleading/wrong: 
      - Description: *"Update an existing ToDo object"* vs. Error: *"There was an error while creating a new ToDo object."*
      - Description: *"Create a new ToDo object"* vs. Error: *"There was an error while updating the ToDo object."*
